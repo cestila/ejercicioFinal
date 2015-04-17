@@ -77,7 +77,15 @@
 
 /*==================[macros and definitions]=================================*/
 
+#define PERIODIC_MIN    100
+#define PERIODIC_MAX    1000
+#define STATE_MAX       6
+
 /*==================[internal data declaration]==============================*/
+
+uint8 periodic = PERIODIC_MAX;
+uint8 blinck_counter=0;
+uint8 mask_led_actual=EDU_CIAA_NXP_LED3_VERDE;
 
 /*==================[internal functions declaration]=========================*/
 
@@ -143,6 +151,60 @@ TASK(InitTask)
    leds_init();
 
    modbusSlave_init();
+
+   TerminateTask();
+}
+
+TASK(PeriodicLedsTask)
+{
+   blinck_counter += 10;
+
+   if (blinck_counter == periodic)
+   {
+      leds_toggle(mask_led_actual);
+      blinck_counter = 0;
+   }
+
+   TerminateTask();
+}
+
+TASK(TecladoTask)
+{
+   uint8 mask_tecla;
+
+   teclado_task();
+
+   mask_tecla = teclado_getFlancos();
+
+   if (mask_tecla==TECLADO_TEC1_BIT && mask_led_actual != EDU_CIAA_NXP_RGB_ROJO)
+   {
+      leds_off(mask_led_actual);
+      mask_led_actual = mask_led_actual >> 1;
+   }
+
+   if (mask_tecla==TECLADO_TEC2_BIT && mask_led_actual!=EDU_CIAA_NXP_LED3_VERDE)
+   {
+      leds_off(mask_led_actual);
+      mask_led_actual = mask_led_actual << 1;
+   }
+
+   if (mask_tecla==TECLADO_TEC3_BIT && periodic < PERIODIC_MAX)
+   {
+      periodic += 10;
+      ciaaPOSIX_printf("Valor de periodic = %d", periodic);
+   }
+
+   if (mask_tecla==TECLADO_TEC4_BIT && periodic > PERIODIC_MIN)
+   {
+      periodic -= 10;
+      ciaaPOSIX_printf("Valor de periodic = %d", periodic);
+   }
+
+   TerminateTask();
+}
+
+TASK(ModbusTask)
+{
 
    TerminateTask();
 }
