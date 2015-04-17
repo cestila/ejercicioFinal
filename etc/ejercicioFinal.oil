@@ -16,6 +16,7 @@ OSEK OSEK {
    EVENT = POSIXE;
    RESOURCE = POSIXR;
    RESOURCE = MODBUSR;
+   RESOURCE = TILTPER;
    
    TASK InitTask {
       PRIORITY = 5;
@@ -38,6 +39,7 @@ OSEK OSEK {
       EVENT = POSIXE;
       RESOURCE = POSIXR;
       SCHEDULE = FULL;
+      RESOURCE = TILTPER;
 	}
 	
 	TASK TecladoTask {
@@ -49,6 +51,7 @@ OSEK OSEK {
       RESOURCE = POSIXR;
       SCHEDULE = FULL;
       RESOURCE = MODBUSR;
+      RESOURCE = TILTPER;
    };
    
    TASK ModbusTask {
@@ -60,6 +63,7 @@ OSEK OSEK {
       RESOURCE = POSIXR;
       SCHEDULE = FULL;
       RESOURCE = MODBUSR;
+      RESOURCE = TILTPER;
    };
    
    ALARM ActivateTeclado {
