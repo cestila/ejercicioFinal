@@ -26,6 +26,8 @@ OSEK OSEK {
       STACK = 512;
       TYPE = BASIC;
       SCHEDULE = NON;
+      RESOURCE = POSIXR;
+      RESOURCE = MODBUSR;
    };
 
 	TASK PeriodicLedsTask {
@@ -46,6 +48,7 @@ OSEK OSEK {
       EVENT = POSIXE;
       RESOURCE = POSIXR;
       SCHEDULE = FULL;
+      RESOURCE = MODBUSR;
    };
    
    TASK ModbusTask {
@@ -56,6 +59,7 @@ OSEK OSEK {
       EVENT = POSIXE;
       RESOURCE = POSIXR;
       SCHEDULE = FULL;
+      RESOURCE = MODBUSR;
    };
    
    ALARM ActivateTeclado {
@@ -74,8 +78,7 @@ OSEK OSEK {
    ALARM Blincking {
       COUNTER = HardwareCounter;
       ACTION = ACTIVATETASK {
-         TASK = TecladoTask;
-         TASK = ModbusTask;
+         TASK = PeriodicLedsTask;
       }
       AUTOSTART = TRUE {
          APPMODE = AppMode1;
@@ -91,5 +94,23 @@ OSEK OSEK {
       TYPE = HARDWARE;
       COUNTER = HWCOUNTER0;
    };
+   
+   ISR UART0_IRQHandler {
+	   INTERRUPT = UART0;
+	   CATEGORY = 2;
+	   PRIORITY = 0;
+	};
+	
+	ISR UART2_IRQHandler {
+	   INTERRUPT = UART2;
+	   CATEGORY = 2;
+	   PRIORITY = 0;
+	};
+	
+	ISR UART3_IRQHandler {
+	   INTERRUPT = UART3;
+	   CATEGORY = 2;
+	   PRIORITY = 0;
+	};
 
 };
